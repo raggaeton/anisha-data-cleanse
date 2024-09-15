@@ -13,6 +13,7 @@
         display: flex;
         flex-direction: column !important;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+        z-index: 1000 !important;
         border-radius: 10px !important; 
       }
 
@@ -161,7 +162,36 @@
     `;
     document.body.appendChild(chatContainer);
 
+    // Check if a user ID exists in localStorage
+    let userId = localStorage.getItem('youly-306511-user-id');
+    // Check the stored status in localStorage
+    let chatStatus = localStorage.getItem('youly-306511-chat-status');
 
+
+    function generateUserId() {
+      // Use crypto.randomUUID() if available
+      if (crypto && crypto.randomUUID) {
+        return crypto.randomUUID();
+      } else {
+        // Fallback to a custom UUID generator
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+          const r = (Math.random() * 16) | 0,
+            v = c === 'x' ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        });
+      }
+    }
+
+    // If status is 'open', show the chat container; else, hide it
+    if (chatStatus === 'open') {
+      showChatContainer();
+    } else {
+      hideChatContainer();
+    }
+    if (!userId) {
+      userId = generateUserId();
+      localStorage.setItem('youly-306511-user-id', userId);
+    }
 
     // Create the toggle button for the chat
     const toggleBtn = document.createElement('button');
@@ -178,19 +208,21 @@
       }
     });
 
-        // Functions to show and hide the chat container
-        function showChatContainer() {
-          chatContainer.classList.remove('hidden');
-          toggleBtn.classList.add('hidden'); // Hide the toggle button
-        }
-    
-        function hideChatContainer() {
-          chatContainer.classList.add('hidden');
-          toggleBtn.classList.remove('hidden'); // Show the toggle button
-        }
-    
-        // Initially hide the chat container
-        hideChatContainer();
+    // Functions to show and hide the chat container
+    function showChatContainer() {
+      chatContainer.classList.remove('hidden');
+      toggleBtn.classList.add('hidden'); // Hide the toggle button
+      localStorage.setItem('youly-306511-chat-status', 'open'); // Store status as 'open'
+    }
+
+    function hideChatContainer() {
+      chatContainer.classList.add('hidden');
+      toggleBtn.classList.remove('hidden'); // Show the toggle button
+      localStorage.setItem('youly-306511-chat-status', 'closed'); // Store status as 'closed'
+    }
+
+    // Initially hide the chat container
+    hideChatContainer();
 
     // Chatbot logic
     const chatBox = document.getElementById('youly-306511-chat-box');
@@ -288,9 +320,11 @@
           headers: {
             'Content-Type': 'application/json',
           },
+          //  body: JSON.stringify({ message, userId }), // Include userId here
         });
         const data = await response.json();
-        return data.quote; // Assuming the API returns a 'quote' field
+        return data.quote;
+
       } catch (error) {
         throw error;
       }
