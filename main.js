@@ -182,12 +182,7 @@
       }
     }
 
-    // If status is 'open', show the chat container; else, hide it
-    if (chatStatus === 'open') {
-      showChatContainer();
-    } else {
-      hideChatContainer();
-    }
+
     if (!userId) {
       userId = generateUserId();
       localStorage.setItem('youly-306511-user-id', userId);
@@ -207,6 +202,13 @@
         hideChatContainer();
       }
     });
+
+    // If status is 'open', show the chat container; else, hide it
+    if (chatStatus === 'open') {
+      showChatContainer();
+    } else {
+      hideChatContainer();
+    }
 
     // Functions to show and hide the chat container
     function showChatContainer() {
