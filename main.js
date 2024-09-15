@@ -9,12 +9,10 @@
         right: 20px !important;
         width: 300px !important;
         height: 400px !important;
-
         background-color: white !important;
-        display: flex !important;
+        display: flex;
         flex-direction: column !important;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
-        z-index: 1000 !important;
         border-radius: 10px !important; 
       }
 
@@ -37,7 +35,7 @@
         padding: 10px !important;
         border: none !important;
         outline: none !important;
-        border-radius: 0 10px; !important
+        border-radius: 0 10px !important;
       }
 
       #youly-306511-send-btn {
@@ -80,13 +78,13 @@
         position: fixed !important;
         bottom: 20px !important;
         right: 20px !important;
-        background: none !important; /* Removed background */
-        color: #4CAF50 !important; /* Updated text color */
+        background: none !important;
+        color: #4CAF50 !important;
+        background-color: #45a049 !important;
+        border-radius: 20px !important;
         padding: 10px !important;
         border: none !important;
-        border-radius: 50% !important;
         cursor: pointer !important;
-        z-index: 1001 !important;
       }
 
       .youly-306511-typing-dot {
@@ -108,17 +106,42 @@
       }
 
       .youly-306511-timestamp {
-        font-size: 0.75em !important; /* Make the font smaller */
+        font-size: 0.75em !important;
         color: #999 !important;
         margin-top: 5px !important;
+      }
+
+      .hidden {
+        display: none !important;
       }
 
       @keyframes youly-306511-bounce {
         0%, 80%, 100% {
           transform: scale(0);
-        } 40% {
+        }
+        40% {
           transform: scale(1);
         }
+      }
+
+      #youly-306511-header {
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        padding: 5px !important;
+        background-color: #4CAF50 !important;
+        border-top-left-radius: 10px !important;
+        border-top-right-radius: 10px !important;
+      }
+
+      #youly-306511-close-btn {
+        background: none !important;
+        border: none !important;
+        font-weight: bold !important;
+        font-size: 20px !important;
+        cursor: pointer !important;
+        color: white !important;
+        margin-right: 10px !important;
       }
     `;
     document.head.appendChild(style);
@@ -127,29 +150,47 @@
     const chatContainer = document.createElement('div');
     chatContainer.id = 'youly-306511-container';
     chatContainer.innerHTML = `
-        <div id="youly-306511-chat-box"></div>
-        <div id="youly-306511-input-area">
-          <input type="text" id="youly-306511-user-input" placeholder="Type your message here" />
-          <button id="youly-306511-send-btn">Send</button>
-        </div>
-      `;
+      <div id="youly-306511-header">
+        <button id="youly-306511-close-btn">X</button>
+      </div>
+      <div id="youly-306511-chat-box"></div>
+      <div id="youly-306511-input-area">
+        <input type="text" id="youly-306511-user-input" placeholder="Type your message here" />
+        <button id="youly-306511-send-btn">Send</button>
+      </div>
+    `;
     document.body.appendChild(chatContainer);
 
-    // Initially hide the chat container
-    chatContainer.style.display = 'none';
+
 
     // Create the toggle button for the chat
     const toggleBtn = document.createElement('button');
     toggleBtn.id = 'youly-306511-toggle-btn';
+    toggleBtn.innerHTML = '💬';
     document.body.appendChild(toggleBtn);
 
     // Toggle the visibility of the chat
     toggleBtn.addEventListener('click', () => {
-      if (chatContainer.style.display === 'none') {
-        chatContainer.style.display = 'flex';
-        toggleBtn.style.display = 'none';
+      if (chatContainer.classList.contains('hidden')) {
+        showChatContainer();
+      } else {
+        hideChatContainer();
       }
     });
+
+        // Functions to show and hide the chat container
+        function showChatContainer() {
+          chatContainer.classList.remove('hidden');
+          toggleBtn.classList.add('hidden'); // Hide the toggle button
+        }
+    
+        function hideChatContainer() {
+          chatContainer.classList.add('hidden');
+          toggleBtn.classList.remove('hidden'); // Show the toggle button
+        }
+    
+        // Initially hide the chat container
+        hideChatContainer();
 
     // Chatbot logic
     const chatBox = document.getElementById('youly-306511-chat-box');
@@ -162,6 +203,7 @@
       addMessageToChat(message.sender, message.text, message.timestamp, false);
     });
 
+    // Event listener for the send button
     sendBtn.addEventListener('click', async () => {
       const message = userInput.value;
       if (message.trim() !== '') {
@@ -177,14 +219,20 @@
         try {
           const response = await getBotResponse(message);
           chatBox.removeChild(typingIndicator);
-          const botTimestamp = new Date().toLocaleTimeString();
+          const botTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           addMessageToChat('Bot', response, botTimestamp);
         } catch (error) {
           chatBox.removeChild(typingIndicator);
-          const errorTimestamp = new Date().toLocaleTimeString();
+          const errorTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           addMessageToChat('Bot', 'Sorry, something went wrong. Please try again.', errorTimestamp);
         }
       }
+    });
+
+    // Close button functionality
+    const closeBtn = document.getElementById('youly-306511-close-btn');
+    closeBtn.addEventListener('click', () => {
+      hideChatContainer();
     });
 
     // Allow sending message with Enter key
@@ -194,6 +242,7 @@
       }
     });
 
+    // Function to add messages to the chat
     function addMessageToChat(sender, message, timestamp, saveToHistory = true) {
       const messageElem = document.createElement('div');
       messageElem.classList.add('youly-306511-message', `youly-306511-${sender.toLowerCase()}-message`);
@@ -212,37 +261,36 @@
       }
     }
 
+    // Function to create the typing indicator
     function createTypingIndicator() {
       const typingIndicator = document.createElement('div');
       typingIndicator.classList.add('youly-306511-message', 'youly-306511-bot-message', 'youly-306511-typing-indicator');
 
       typingIndicator.innerHTML = `
-          <div class="youly-306511-message-header">
-            <strong>Bot</strong> <span class="youly-306511-timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-          </div>
-          <div class="youly-306511-message-text">
-            <span class="youly-306511-typing-dot"></span>
-            <span class="youly-306511-typing-dot"></span>
-            <span class="youly-306511-typing-dot"></span>
-          </div>
-        `;
+        <div class="youly-306511-message-text">
+          <span class="youly-306511-typing-dot"></span>
+          <span class="youly-306511-typing-dot"></span>
+          <span class="youly-306511-typing-dot"></span>
+        </div>
+        <div class="youly-306511-timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+      `;
       return typingIndicator;
     }
 
+    // Function to get bot response
     async function getBotResponse(message) {
       // Simulate network delay for typing indicator
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       try {
-        const response = await fetch(`https://dummyjson.com/quotes/${Math.floor(Math.random() * 20)}?delay=500`, {
+        const response = await fetch(`https://dummyjson.com/quotes/${Math.floor(Math.random() * 20) + 1}?delay=500`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
-          //   body: JSON.stringify({ message }),
         });
         const data = await response.json();
-        return data.quote; // Assuming the API returns a 'reply' field
+        return data.quote; // Assuming the API returns a 'quote' field
       } catch (error) {
         throw error;
       }
