@@ -1,8 +1,8 @@
 (function () {
   document.addEventListener('DOMContentLoaded', () => {
-    // Inject styles with unique class names
-    const style = document.createElement('style');
-    style.innerHTML = `
+      // Inject styles with unique class names
+      const style = document.createElement('style');
+      style.innerHTML = `
       #youly-306511-container {
         position: fixed !important;
         bottom: 20px !important;
@@ -21,14 +21,18 @@
         display: flex !important;
         flex-direction: column !important;
         padding: 10px !important;
+        font-size: 14px !important;
         overflow-y: auto !important;
         background-color: #f7f7f7 !important;
         flex-grow: 1 !important;
       }
 
       #youly-306511-input-area {
-        display: flex !important;
-        border-top: 1px solid #ccc !important;
+          display: flex !important;
+          border-top: none !important; /* Remove the border-top if present */
+          position: relative !important; /* Ensure the element can have positioned children */
+          box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1) !important; /* Shadow appearing above */
+          z-index: 1 !important; /* Place this element above others if necessary */
       }
 
       #youly-306511-user-input {
@@ -48,8 +52,26 @@
         border-radius: 0 0 10px 0 !important; 
       }
 
+      #youly-306511-send-btn {
+        background-color: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        cursor: pointer !important;
+        border-radius: 0 0 10px 0 !important; /* Keep if needed */
+      }
+
       #youly-306511-send-btn:hover {
-        background-color: #45a049 !important;
+        opacity: 0.8 !important;
+      }
+
+      #youly-306511-send-btn:focus {
+        outline: none !important;
+      }
+
+      #youly-306511-send-icon {
+        width: 24px !important;
+        height: 24px !important;
+        margin: 8px !important;
       }
 
       .youly-306511-message {
@@ -75,18 +97,62 @@
         text-align: left !important;
       }
 
+
       #youly-306511-toggle-btn {
         position: fixed !important;
         bottom: 20px !important;
         right: 20px !important;
-        background: none !important;
-        color: #4CAF50 !important;
-        background-color: #45a049 !important;
-        border-radius: 20px !important;
-        padding: 10px !important;
+        background-color: #4CAF50 !important;
+        color: white !important;
+        padding: 10px 20px !important;
         border: none !important;
+        border-radius: 30px !important;
         cursor: pointer !important;
-      }
+        z-index: 1001 !important;
+        display: flex ;
+        align-items: center !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+      }       
+
+      /* Live Dot */
+      .youly-306511-live-dot {
+        width: 12px !important;
+        height: 12px !important;
+        background-color: #00FF00 !important; 
+        border-radius: 50% !important;
+        margin-right: 10px !important;
+        position: relative !important;
+      }       
+
+      .youly-306511-live-dot::before {
+        content: '' !important;
+        position: absolute !important;
+        top: -6px !important;
+        left: -6px !important;
+        width: 24px !important;
+        height: 24px !important;
+        border-radius: 50% !important;
+        background-color: rgba(0, 255, 0, 0.3) !important;
+        animation: youly-306511-pulse 1.5s infinite !important;
+      }       
+
+      /* Toggle Button Text */
+      .youly-306511-toggle-text {
+        font-size: 13px !important;
+      }       
+
+      /* Pulse Animation */
+      @keyframes youly-306511-pulse {
+        0% {
+          transform: scale(0.5) ;
+          opacity: 1 ;
+        }
+        100% {
+          transform: scale(1.5) ;
+          opacity: 0 ;
+        }
+      }       
+
 
       .youly-306511-typing-dot {
         display: inline-block;
@@ -107,7 +173,7 @@
       }
 
       .youly-306511-timestamp {
-        font-size: 0.75em !important;
+        font-size: 10px !important;
         color: #999 !important;
         margin-top: 5px !important;
       }
@@ -138,169 +204,172 @@
       #youly-306511-close-btn {
         background: none !important;
         border: none !important;
-        font-weight: bold !important;
+        font-weight: semibold !important;
         font-size: 20px !important;
         cursor: pointer !important;
         color: white !important;
         margin-right: 10px !important;
       }
     `;
-    document.head.appendChild(style);
+      document.head.appendChild(style);
 
-    // Inject chatbot HTML
-    const chatContainer = document.createElement('div');
-    chatContainer.id = 'youly-306511-container';
-    chatContainer.innerHTML = `
+      // Inject chatbot HTML
+      const chatContainer = document.createElement('div');
+      chatContainer.id = 'youly-306511-container';
+      chatContainer.innerHTML = `
       <div id="youly-306511-header">
-        <button id="youly-306511-close-btn">X</button>
+        <button id="youly-306511-close-btn">x</button>
       </div>
       <div id="youly-306511-chat-box"></div>
       <div id="youly-306511-input-area">
-        <input type="text" id="youly-306511-user-input" placeholder="Type your message here" />
-        <button id="youly-306511-send-btn">Send</button>
+        <input type="text" id="youly-306511-user-input" placeholder="Send a message" />
+        <button id="youly-306511-send-btn">
+          <img src="https://ekaradag14.github.io/youly-chatbot/send.png" width alt="Send" id="youly-306511-send-icon" />
+        </button>
       </div>
     `;
-    document.body.appendChild(chatContainer);
+      document.body.appendChild(chatContainer);
 
-    // Check if a user ID exists in localStorage
-    let userId = localStorage.getItem('youly-306511-user-id');
-    // Check the stored status in localStorage
-    let chatStatus = localStorage.getItem('youly-306511-chat-status');
+      // Check if a user ID exists in localStorage
+      let userId = localStorage.getItem('youly-306511-user-id');
+      // Check the stored status in localStorage
+      let chatStatus = localStorage.getItem('youly-306511-chat-status');
 
 
-    function generateUserId() {
-      // Use crypto.randomUUID() if available
-      if (crypto && crypto.randomUUID) {
-        return crypto.randomUUID();
+      function generateUserId() {
+          // Use crypto.randomUUID() if available
+          if (crypto && crypto.randomUUID) {
+              return crypto.randomUUID();
+          } else {
+              // Fallback to a custom UUID generator
+              return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                  const r = (Math.random() * 16) | 0,
+                      v = c === 'x' ? r : (r & 0x3) | 0x8;
+                  return v.toString(16);
+              });
+          }
+      }
+
+
+      if (!userId) {
+          userId = generateUserId();
+          localStorage.setItem('youly-306511-user-id', userId);
+      }
+
+      // Create the toggle button for the chat
+      const toggleBtn = document.createElement('button');
+      toggleBtn.id = 'youly-306511-toggle-btn';
+      toggleBtn.innerHTML = `
+          <span class="youly-306511-live-dot"></span>
+          <span class="youly-306511-toggle-text">Message us</span>
+      `;
+      document.body.appendChild(toggleBtn);
+
+      // Toggle the visibility of the chat
+      toggleBtn.addEventListener('click', () => {
+          if (chatContainer.classList.contains('hidden')) {
+              showChatContainer();
+          } else {
+              hideChatContainer();
+          }
+      });
+
+      // If status is 'open', show the chat container; else, hide it
+      if (chatStatus === 'open') {
+          showChatContainer();
       } else {
-        // Fallback to a custom UUID generator
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-          const r = (Math.random() * 16) | 0,
-            v = c === 'x' ? r : (r & 0x3) | 0x8;
-          return v.toString(16);
-        });
+          hideChatContainer();
       }
-    }
 
-
-    if (!userId) {
-      userId = generateUserId();
-      localStorage.setItem('youly-306511-user-id', userId);
-    }
-
-    // Create the toggle button for the chat
-    const toggleBtn = document.createElement('button');
-    toggleBtn.id = 'youly-306511-toggle-btn';
-    toggleBtn.innerHTML = '💬';
-    document.body.appendChild(toggleBtn);
-
-    // Toggle the visibility of the chat
-    toggleBtn.addEventListener('click', () => {
-      if (chatContainer.classList.contains('hidden')) {
-        showChatContainer();
-      } else {
-        hideChatContainer();
+      // Functions to show and hide the chat container
+      function showChatContainer() {
+          chatContainer.classList.remove('hidden');
+          toggleBtn.classList.add('hidden'); // Hide the toggle button
+          localStorage.setItem('youly-306511-chat-status', 'open'); // Store status as 'open'
       }
-    });
 
-    // If status is 'open', show the chat container; else, hide it
-    if (chatStatus === 'open') {
-      showChatContainer();
-    } else {
-      hideChatContainer();
-    }
-
-    // Functions to show and hide the chat container
-    function showChatContainer() {
-      chatContainer.classList.remove('hidden');
-      toggleBtn.classList.add('hidden'); // Hide the toggle button
-      localStorage.setItem('youly-306511-chat-status', 'open'); // Store status as 'open'
-    }
-
-    function hideChatContainer() {
-      chatContainer.classList.add('hidden');
-      toggleBtn.classList.remove('hidden'); // Show the toggle button
-      localStorage.setItem('youly-306511-chat-status', 'closed'); // Store status as 'closed'
-    }
-
-    // Initially hide the chat container
-    hideChatContainer();
-
-    // Chatbot logic
-    const chatBox = document.getElementById('youly-306511-chat-box');
-    const userInput = document.getElementById('youly-306511-user-input');
-    const sendBtn = document.getElementById('youly-306511-send-btn');
-
-    // Load chat history from localStorage
-    let chatHistory = JSON.parse(localStorage.getItem('youly-306511-chat-history')) || [];
-    chatHistory.forEach((message) => {
-      addMessageToChat(message.sender, message.text, message.timestamp, false);
-    });
-
-    // Event listener for the send button
-    sendBtn.addEventListener('click', async () => {
-      const message = userInput.value;
-      if (message.trim() !== '') {
-        const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        addMessageToChat('User', message, timestamp);
-        userInput.value = ''; // Clear input field
-
-        // Show typing indicator
-        const typingIndicator = createTypingIndicator();
-        chatBox.appendChild(typingIndicator);
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        try {
-          const response = await getBotResponse(message);
-          chatBox.removeChild(typingIndicator);
-          const botTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          addMessageToChat('Bot', response, botTimestamp);
-        } catch (error) {
-          chatBox.removeChild(typingIndicator);
-          const errorTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          addMessageToChat('Bot', 'Sorry, something went wrong. Please try again.', errorTimestamp);
-        }
+      function hideChatContainer() {
+          chatContainer.classList.add('hidden');
+          toggleBtn.classList.remove('hidden'); // Show the toggle button
+          localStorage.setItem('youly-306511-chat-status', 'closed'); // Store status as 'closed'
       }
-    });
 
-    // Close button functionality
-    const closeBtn = document.getElementById('youly-306511-close-btn');
-    closeBtn.addEventListener('click', () => {
-      hideChatContainer();
-    });
 
-    // Allow sending message with Enter key
-    userInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        sendBtn.click();
-      }
-    });
+      // Chatbot logic
+      const chatBox = document.getElementById('youly-306511-chat-box');
+      const userInput = document.getElementById('youly-306511-user-input');
+      const sendBtn = document.getElementById('youly-306511-send-btn');
 
-    // Function to add messages to the chat
-    function addMessageToChat(sender, message, timestamp, saveToHistory = true) {
-      const messageElem = document.createElement('div');
-      messageElem.classList.add('youly-306511-message', `youly-306511-${sender.toLowerCase()}-message`);
+      // Load chat history from localStorage
+      let chatHistory = JSON.parse(localStorage.getItem('youly-306511-chat-history')) || [];
+      chatHistory.forEach((message) => {
+          addMessageToChat(message.sender, message.text, message.timestamp, false);
+      });
 
-      messageElem.innerHTML = `
+      // Event listener for the send button
+      sendBtn.addEventListener('click', async () => {
+          const message = userInput.value;
+          if (message.trim() !== '') {
+              const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              addMessageToChat('User', message, timestamp);
+              userInput.value = ''; // Clear input field
+
+              // Show typing indicator
+              const typingIndicator = createTypingIndicator();
+              chatBox.appendChild(typingIndicator);
+              chatBox.scrollTop = chatBox.scrollHeight;
+
+              try {
+                  const response = await getBotResponse(message);
+                  chatBox.removeChild(typingIndicator);
+                  const botTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                  addMessageToChat('Bot', response, botTimestamp);
+              } catch (error) {
+                  chatBox.removeChild(typingIndicator);
+                  const errorTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                  addMessageToChat('Bot', 'Sorry, something went wrong. Please try again.', errorTimestamp);
+              }
+          }
+      });
+
+      // Close button functionality
+      const closeBtn = document.getElementById('youly-306511-close-btn');
+      closeBtn.addEventListener('click', () => {
+          hideChatContainer();
+      });
+
+      // Allow sending message with Enter key
+      userInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+              sendBtn.click();
+          }
+      });
+
+      // Function to add messages to the chat
+      function addMessageToChat(sender, message, timestamp, saveToHistory = true) {
+          const messageElem = document.createElement('div');
+          messageElem.classList.add('youly-306511-message', `youly-306511-${sender.toLowerCase()}-message`);
+
+          messageElem.innerHTML = `
         <div class="youly-306511-message-text">${message}</div>
         <div class="youly-306511-timestamp">${timestamp}</div>
       `;
-      chatBox.appendChild(messageElem);
-      chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+          chatBox.appendChild(messageElem);
+          chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
 
-      // Save message to chat history
-      if (saveToHistory) {
-        chatHistory.push({ sender, text: message, timestamp });
-        localStorage.setItem('youly-306511-chat-history', JSON.stringify(chatHistory));
+          // Save message to chat history
+          if (saveToHistory) {
+              chatHistory.push({ sender, text: message, timestamp });
+              localStorage.setItem('youly-306511-chat-history', JSON.stringify(chatHistory));
+          }
       }
-    }
 
-    // Function to create the typing indicator
-    function createTypingIndicator() {
-      const typingIndicator = document.createElement('div');
-      typingIndicator.classList.add('youly-306511-message', 'youly-306511-bot-message', 'youly-306511-typing-indicator');
+      // Function to create the typing indicator
+      function createTypingIndicator() {
+          const typingIndicator = document.createElement('div');
+          typingIndicator.classList.add('youly-306511-message', 'youly-306511-bot-message', 'youly-306511-typing-indicator');
 
-      typingIndicator.innerHTML = `
+          typingIndicator.innerHTML = `
         <div class="youly-306511-message-text">
           <span class="youly-306511-typing-dot"></span>
           <span class="youly-306511-typing-dot"></span>
@@ -308,28 +377,28 @@
         </div>
         <div class="youly-306511-timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
       `;
-      return typingIndicator;
-    }
-
-    // Function to get bot response
-    async function getBotResponse(message) {
-      // Simulate network delay for typing indicator
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      try {
-        const response = await fetch(`https://dummyjson.com/quotes/${Math.floor(Math.random() * 20) + 1}?delay=500`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          //  body: JSON.stringify({ message, userId }), // Include userId here
-        });
-        const data = await response.json();
-        return data.quote;
-
-      } catch (error) {
-        throw error;
+          return typingIndicator;
       }
-    }
+
+      // Function to get bot response
+      async function getBotResponse(message) {
+          // Simulate network delay for typing indicator
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          try {
+              const response = await fetch(`https://dummyjson.com/quotes/${Math.floor(Math.random() * 20) + 1}?delay=500`, {
+                  method: 'GET',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  //  body: JSON.stringify({ message, userId }), // Include userId here
+              });
+              const data = await response.json();
+              return data.quote;
+
+          } catch (error) {
+              throw error;
+          }
+      }
   });
 })();
