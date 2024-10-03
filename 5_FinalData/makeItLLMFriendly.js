@@ -70,7 +70,7 @@ async function makeItLLMFriendly() {
 
   // Initialize the final LLM-friendly object
   const llmFriendlyObject = {
-    name: "anisha",
+    name: "anisha-test-1",
     texts: [],
     metadatas: []
   };
