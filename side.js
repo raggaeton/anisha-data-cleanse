@@ -13,9 +13,12 @@ if (localStorage.getItem('rag-client') === 'true') {
     script2.defer = true;
     document.head.appendChild(script2);
 
-    // Add the custom CSS for .bpFab
+    // Add the custom CSS for .bpFab and .bpComposerPoweredBy
     var style = document.createElement('style');
-    style.innerHTML = '.bpFab { right: 5.5rem !important; }';
+    style.innerHTML = `
+      .bpFab { right: 5.5rem !important; }
+      .bpComposerPoweredBy { display: none !important; }
+    `;
     document.head.appendChild(style);
   };
 }
