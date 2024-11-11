@@ -25,8 +25,9 @@ if (localStorage.getItem('rag-client') === 'true') {
     document.addEventListener('DOMContentLoaded', function() {
       const elements = Array.from(document.querySelectorAll('*'));
       elements.forEach(element => {
-        if (element.textContent.trim() === '⚡ by Botpress') {
+        if (element.textContent.trim().includes('by Botpress')) {
           element.style.display = 'none';
+          element.textContent = ''; 
         }
       });
     });
