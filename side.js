@@ -12,5 +12,10 @@ if (localStorage.getItem('rag-client') === 'true') {
     script2.src = 'https://files.bpcontent.cloud/2024/10/07/12/20241007120304-O0RURIDS.js';
     script2.defer = true;
     document.head.appendChild(script2);
+
+    // Add the custom CSS for .bpFab
+    var style = document.createElement('style');
+    style.innerHTML = '.bpFab { right: 5.5rem !important; }';
+    document.head.appendChild(style);
   };
 }
