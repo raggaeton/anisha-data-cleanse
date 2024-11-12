@@ -9,7 +9,7 @@ if (localStorage.getItem('rag-client') === 'true') {
   // Load the Botpress config script after the inject script has loaded
   script1.onload = function() {
     var script2 = document.createElement('script');
-    script2.src = 'https://mediafiles.botpress.cloud/17a32590-61ca-44a6-89b7-ab13d83f5a61/webchat/config.j';
+    script2.src = 'https://mediafiles.botpress.cloud/17a32590-61ca-44a6-89b7-ab13d83f5a61/webchat/config.js';
     script2.defer = true;
     document.head.appendChild(script2);
 
