@@ -13,12 +13,40 @@ if (localStorage.getItem('rag-client') === 'true') {
     script2.defer = true;
     document.head.appendChild(script2);
 
-    // Add the custom CSS for .bpFab and .bpComposerPoweredBy
+    // Add the custom CSS styles
     var style = document.createElement('style');
     style.innerHTML = `
-      .bpFab { right: 5.5rem !important; }
+      .bpFab { 
+        right: 5.5rem !important; 
+      }
+      .bpw-floating-button {
+        background-color: #8d1537 !important;
+      }
+      .bp-widget-widget {
+        bottom: -10px !important;
+        right: 3rem !important;
+      }
+      .bpw-header-container {
+        background-color: #8d1537 !important;
+      }
+      .bpw-button {
+        border-color: #8d1537 !important;
+        color: #8d1537 !important;
+      }
+      .bpw-chat-bubble-content {
+        background-color: #8d1537 !important;
+      }
+      .bpw-powered {
+        display: none !important;
+      }
+      .bpw-header-subtitle {
+        display: none !important;
+      }
+      .bpw-chat-container {
+        bottom: 3rem !important;
+        max-height: 80vh !important;
+      }
     `;
     document.head.appendChild(style);
-
   };
 }
