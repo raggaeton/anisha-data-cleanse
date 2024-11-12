@@ -17,19 +17,8 @@ if (localStorage.getItem('rag-client') === 'true') {
     var style = document.createElement('style');
     style.innerHTML = `
       .bpFab { right: 5.5rem !important; }
-      .bpComposerPoweredBy { display: none !important; }
     `;
     document.head.appendChild(style);
 
-    // Wait until the DOM is fully loaded, then hide elements with the text "⚡ by Botpress"
-    document.addEventListener('DOMContentLoaded', function() {
-      const elements = Array.from(document.querySelectorAll('*'));
-      elements.forEach(element => {
-        if (element.textContent.trim().includes('by Botpress')) {
-          element.style.display = 'none';
-          element.textContent = ''; 
-        }
-      });
-    });
   };
 }
