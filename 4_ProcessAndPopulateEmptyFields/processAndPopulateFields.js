@@ -23,7 +23,7 @@ function populateEmptyFields(arrayWithEmptyValues, fieldOptions) {
       }
     }
   });
-  
+   
   return arrayWithEmptyValues; // Return the modified array
 }
 
