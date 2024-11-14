@@ -2,9 +2,13 @@
     background-color: #8d1537;
 }
 
-#bp-web-widget {
+.bpw-floating-button {
     bottom: -10px;    
-    right: 5rem;
+    margin-right: 2rem;
+}
+
+#bp-web-widget{
+    width: 90px 
 }
 
 .bpw-header-container {
