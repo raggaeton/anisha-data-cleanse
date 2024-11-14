@@ -1,8 +1,5 @@
 .bpw-floating-button {
     background-color: #8d1537;
-}
-
-.bpw-floating-button {
     bottom: -10px;    
     margin-right: 2rem;
 }
