@@ -6,7 +6,7 @@
         background-color: #8d1537 !important;
       }
     #bp-web-widget{
-    width: 90px !important;
+    min-width: 90px !important;
     }
       .bp-widget-widget {
         bottom: -10px !important;
