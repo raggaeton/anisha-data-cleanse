@@ -1,13 +1,10 @@
 
-      .bpFab { 
-        right: 5.5rem !important; 
-      }
       .bpw-floating-button {
         background-color: #8d1537 !important;
       }
-    #bp-web-widget{
-    min-width: 90px !important;
-    }
+      #bp-web-widget{
+        min-width: 90px !important;
+      }
       .bp-widget-widget {
         bottom: -10px !important;
         right: 5rem !important;
@@ -18,9 +15,6 @@
       .bpw-button {
         border-color: #8d1537 !important;
         color: #8d1537 !important;
-      }
-      .bpw-chat-bubble-content {
-        background-color: #8d1537 !important;
       }
       .bpw-powered {
         display: none !important;
