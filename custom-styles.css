@@ -2,7 +2,7 @@
     background-color: #8d1537;
 }
 
-.bp-widget-widget {
+#bp-widget-widget {
     bottom: -10px;    
     right: 3rem;
 }
