@@ -86,8 +86,6 @@
     box-shadow: 1px 11px 28px 0px rgb(0 0 0 / 9%);
     -webkit-box-shadow: 1px 11px 28px 0px rgb(0 0 0 / 9%);
     -moz-box-shadow: 1px 11px 28px 0px rgba(0, 0, 0, 0.07);
-        animation: bubbleIn 0.6s ease-out;
-        /*animation: bubbleIn 0.6s ease-out 3s;*/
 
 }
 
@@ -106,50 +104,8 @@
 }
 }
 
-@keyframes bubbleIn {
-    0% {
-        transform: scale(0) translateY(50%);
-        opacity: 0;
-    }
-    60% {
-        transform: scale(1.1) translateY(-10%);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1) translateY(0);
-    }
-}
 
-.dot {
-    color: green;
-    font-size: 30px;
-    margin-left: 5px;
-    animation: pulse 1s infinite;
-    /*display: inline-block;*/
-        text-shadow: #1dc91d 1px 1px 7px;
-}
 
-@media only screen and (max-width: 600px) {
-.dot {
-       font-size: 24px; 
-       margin-bottom: 0px;
-}
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(4);
-        opacity: 0.7;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
 
       `;
       document.head.appendChild(style);
