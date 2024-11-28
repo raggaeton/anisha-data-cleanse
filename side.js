@@ -48,10 +48,11 @@
     }
   
     // Function to show the chat bubble
+    //TODO: move text to dashboard
     function showChatBubble() {
       const chatBubble = document.createElement('div');
       chatBubble.className = 'chat-bubble';
-        chatBubble.innerHTML = '<span>Size bir kahve önerelim!<span class="dot">•</span></span>';
+        chatBubble.innerHTML = '<span>İlham için kahve önerelim!<span class="dot">•</span></span>';
         setTimeout(() => {
             document.body.appendChild(chatBubble);
           }, 2000);
