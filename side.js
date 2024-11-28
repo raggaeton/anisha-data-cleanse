@@ -107,8 +107,8 @@
             z-index: 50;
             position: fixed;
             font-weight: 500;
-            right: 85px;
-            bottom: 90px;
+            right: 135px;
+            bottom: 70px;
             color: gray;
             background-color: #ffffff;
             border-radius: 8px;
