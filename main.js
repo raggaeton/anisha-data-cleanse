@@ -69,26 +69,7 @@
           bottom: 3rem !important;
           max-height: 80vh !important;
         }
-        .chat-bubble {
-          position: fixed;
-          bottom: 4rem;
-          right: 6rem;
-          background-color: #8d1537;
-          color: white;
-          border-radius: 20px;
-          padding: 10px 20px;
-          font-size: 14px;
-          font-family: Arial, sans-serif;
-          display: flex;
-          align-items: center;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .chat-bubble .dot {
-          margin-left: 5px;
-          font-size: 20px;
-          line-height: 14px;
-          color: #28a745; /* Green dot */
-        }
+
         .bp-widget-side { 
         z-index: 999999999 !important;
 }
@@ -96,7 +77,8 @@
     z-index:50;
     position: fixed;
     font-weight: 500;
-    right: 110px;
+    color: black;
+    right: 145px;
     bottom: 43px;
     background-color: #ffffff;
     border-radius: 10px;
