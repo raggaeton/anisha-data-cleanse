@@ -71,6 +71,33 @@
       // Inject CSS
       const style = document.createElement('style');
       style.innerHTML = `
+          .bpw-floating-button {
+          background-color: #8d1537 !important;
+        }
+        #bp-web-widget {
+          min-width: 90px !important;
+        }
+        .bp-widget-widget {
+          bottom: -10px !important;
+          right: 5rem !important;
+        }
+        .bpw-header-container {
+          background-color: #8d1537 !important;
+        }
+        .bpw-button {
+          border-color: #8d1537 !important;
+          color: #8d1537 !important;
+        }
+        .bpw-powered {
+          display: none !important;
+        }
+        .bpw-header-subtitle {
+          display: none !important;
+        }
+        .bpw-chat-container {
+          bottom: 3rem !important;
+          max-height: 80vh !important;
+        }
         .bp-widget-side { 
             z-index: 999999999 !important;
         }
