@@ -1,404 +1,184 @@
 (function () {
-  document.addEventListener('DOMContentLoaded', () => {
-      // Inject styles with unique class names
-      const style = document.createElement('style');
+  const currentRolloutPercentage = 1; // Update this value as needed
+
+  // Retrieve stored values from localStorage
+  const storedRolloutPercentage = parseInt(localStorage.getItem('rolloutPercentage'), 10);
+  const currentAssignment = localStorage.getItem('rag-client');
+
+  // If the user is already included, keep them included
+  if (currentAssignment === 'true') {
+    loadScripts();
+    showChatBubble();
+  } else if (storedRolloutPercentage !== currentRolloutPercentage || currentAssignment === null) {
+    // For new users or if rollout percentage has changed
+    const randomValue = Math.random() * 100;
+
+    // Assign based on the current rollout percentage
+    const userIncluded = randomValue < currentRolloutPercentage;
+    localStorage.setItem('rag-client', userIncluded ? 'true' : 'false');
+
+    // Update the stored rollout percentage
+    localStorage.setItem('rolloutPercentage', currentRolloutPercentage);
+
+    // Load scripts and show the chat bubble for new users who are included
+    if (userIncluded) {
+      loadScripts();
+      showChatBubble();
+    }
+  }
+
+  // Function to load Botpress scripts
+  function loadScripts() {
+    var script1 = document.createElement('script');
+    script1.src = 'https://cdn.botpress.cloud/webchat/v1/inject.js';
+    script1.defer = true;
+    document.head.appendChild(script1);
+
+    script1.onload = function () {
+      var script2 = document.createElement('script');
+      script2.src = 'https://mediafiles.botpress.cloud/17a32590-61ca-44a6-89b7-ab13d83f5a61/webchat/config.js';
+      script2.defer = true;
+      document.head.appendChild(script2);
+
+      var style = document.createElement('style');
       style.innerHTML = `
-      #youly-306511-container {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        width: 300px !important;
-        height: 400px !important;
-        background-color: white !important;
-        display: flex;
-        flex-direction: column !important;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
-        z-index: 1000 !important;
-        border-radius: 10px !important; 
-      }
-
-      #youly-306511-chat-box {
-        display: flex !important;
-        flex-direction: column !important;
-        padding: 10px !important;
-        font-size: 14px !important;
-        overflow-y: auto !important;
-        background-color: #f7f7f7 !important;
-        flex-grow: 1 !important;
-      }
-
-      #youly-306511-input-area {
-          display: flex !important;
-          border-top: none !important; /* Remove the border-top if present */
-          position: relative !important; /* Ensure the element can have positioned children */
-          box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1) !important; /* Shadow appearing above */
-          z-index: 1 !important; /* Place this element above others if necessary */
-      }
-
-      #youly-306511-user-input {
-        flex-grow: 1 !important;
-        padding: 10px !important;
-        border: none !important;
-        outline: none !important;
-        border-radius: 0 10px !important;
-      }
-
-      #youly-306511-send-btn {
-        padding: 10px 15px !important;
-        background-color: #4CAF50 !important;
-        color: white !important;
-        border: none !important;
-        cursor: pointer !important;
-        border-radius: 0 0 10px 0 !important; 
-      }
-
-      #youly-306511-send-btn {
-        background-color: transparent !important;
-        border: none !important;
-        padding: 0 !important;
-        cursor: pointer !important;
-        border-radius: 0 0 10px 0 !important; /* Keep if needed */
-      }
-
-      #youly-306511-send-btn:hover {
-        opacity: 0.8 !important;
-      }
-
-      #youly-306511-send-btn:focus {
-        outline: none !important;
-      }
-
-      #youly-306511-send-icon {
-        width: 24px !important;
-        height: 24px !important;
-        margin: 8px !important;
-      }
-
-      .youly-306511-message {
-        align-items: flex-end !important;
-        border-radius: 5px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        margin-bottom: 10px !important;
-        max-width: 80% !important;
-        padding: 8px 12px !important;
-        word-wrap: break-word !important;
-      }
-
-      .youly-306511-user-message {
-        background-color: #dcf8c6 !important;
-        align-self: flex-end !important;
-        text-align: right !important;
-      }
-
-      .youly-306511-bot-message {
-        background-color: #ffffff !important;
-        align-self: flex-start !important;
-        text-align: left !important;
-      }
-
-
-      #youly-306511-toggle-btn {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        background-color: #4CAF50 !important;
-        color: white !important;
-        padding: 10px 20px !important;
-        border: none !important;
-        border-radius: 30px !important;
-        cursor: pointer !important;
-        z-index: 1001 !important;
-        display: flex ;
-        align-items: center !important;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-      }       
-
-      /* Live Dot */
-      .youly-306511-live-dot {
-        width: 12px !important;
-        height: 12px !important;
-        background-color: #00FF00 !important; 
-        border-radius: 50% !important;
-        margin-right: 10px !important;
-        position: relative !important;
-      }       
-
-      .youly-306511-live-dot::before {
-        content: '' !important;
-        position: absolute !important;
-        top: -6px !important;
-        left: -6px !important;
-        width: 24px !important;
-        height: 24px !important;
-        border-radius: 50% !important;
-        background-color: rgba(0, 255, 0, 0.3) !important;
-        animation: youly-306511-pulse 1.5s infinite !important;
-      }       
-
-      /* Toggle Button Text */
-      .youly-306511-toggle-text {
-        font-size: 13px !important;
-      }       
-
-      /* Pulse Animation */
-      @keyframes youly-306511-pulse {
-        0% {
-          transform: scale(0.5) ;
-          opacity: 1 ;
+        .bpw-floating-button {
+          background-color: #8d1537 !important;
         }
-        100% {
-          transform: scale(1.5) ;
-          opacity: 0 ;
+        #bp-web-widget {
+          min-width: 90px !important;
         }
-      }       
-
-
-      .youly-306511-typing-dot {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        margin: 0 2px;
-        background-color: #ccc;
-        border-radius: 50%;
-        animation: youly-306511-bounce 1.4s infinite ease-in-out both;
-      }
-
-      .youly-306511-typing-dot:nth-child(1) {
-        animation-delay: -0.32s;
-      }
-
-      .youly-306511-typing-dot:nth-child(2) {
-        animation-delay: -0.16s;
-      }
-
-      .youly-306511-timestamp {
-        font-size: 10px !important;
-        color: #999 !important;
-        margin-top: 5px !important;
-      }
-
-      .hidden {
-        display: none !important;
-      }
-
-      @keyframes youly-306511-bounce {
-        0%, 80%, 100% {
-          transform: scale(0);
+        .bp-widget-widget {
+          bottom: -10px !important;
+          right: 5rem !important;
         }
-        40% {
-          transform: scale(1);
+        .bpw-header-container {
+          background-color: #8d1537 !important;
         }
-      }
+        .bpw-button {
+          border-color: #8d1537 !important;
+          color: #8d1537 !important;
+        }
+        .bpw-powered {
+          display: none !important;
+        }
+        .bpw-header-subtitle {
+          display: none !important;
+        }
+        .bpw-chat-container {
+          bottom: 3rem !important;
+          max-height: 80vh !important;
+        }
+        .chat-bubble {
+          position: fixed;
+          bottom: 4rem;
+          right: 6rem;
+          background-color: #8d1537;
+          color: white;
+          border-radius: 20px;
+          padding: 10px 20px;
+          font-size: 14px;
+          font-family: Arial, sans-serif;
+          display: flex;
+          align-items: center;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .chat-bubble .dot {
+          margin-left: 5px;
+          font-size: 20px;
+          line-height: 14px;
+          color: #28a745; /* Green dot */
+        }
+        .bp-widget-side { 
+        z-index: 999999999 !important;
+}
+.chat-bubble {
+    z-index:50;
+    position: fixed;
+    font-weight: 500;
+    right: 110px;
+    bottom: 43px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 1px 20px;
+    box-shadow: 1px 11px 28px 0px rgb(0 0 0 / 9%);
+    -webkit-box-shadow: 1px 11px 28px 0px rgb(0 0 0 / 9%);
+    -moz-box-shadow: 1px 11px 28px 0px rgba(0, 0, 0, 0.07);
+        animation: bubbleIn 0.6s ease-out;
+        /*animation: bubbleIn 0.6s ease-out 3s;*/
 
-      #youly-306511-header {
-        display: flex !important;
-        justify-content: flex-end !important;
-        align-items: center !important;
-        padding: 5px !important;
-        background-color: #4CAF50 !important;
-        border-top-left-radius: 10px !important;
-        border-top-right-radius: 10px !important;
-      }
+}
 
-      #youly-306511-close-btn {
-        background: none !important;
-        border: none !important;
-        font-weight: semibold !important;
-        font-size: 20px !important;
-        cursor: pointer !important;
-        color: white !important;
-        margin-right: 10px !important;
-      }
-    `;
+.chat-bubble span {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+}
+
+@media only screen and (max-width: 600px) {
+.chat-bubble {
+    font-size:12px;
+    bottom: 46px;
+    padding: 0px 10px 0px 10px;
+}
+}
+
+@keyframes bubbleIn {
+    0% {
+        transform: scale(0) translateY(50%);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.1) translateY(-10%);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+    }
+}
+
+.dot {
+    color: green;
+    font-size: 30px;
+    margin-left: 5px;
+    animation: pulse 1s infinite;
+    /*display: inline-block;*/
+        text-shadow: #1dc91d 1px 1px 7px;
+}
+
+@media only screen and (max-width: 600px) {
+.dot {
+       font-size: 24px; 
+       margin-bottom: 0px;
+}
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(4);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+      `;
       document.head.appendChild(style);
+    };
+  }
 
-      // Inject chatbot HTML
-      const chatContainer = document.createElement('div');
-      chatContainer.id = 'youly-306511-container';
-      chatContainer.innerHTML = `
-      <div id="youly-306511-header">
-        <button id="youly-306511-close-btn">x</button>
-      </div>
-      <div id="youly-306511-chat-box"></div>
-      <div id="youly-306511-input-area">
-        <input type="text" id="youly-306511-user-input" placeholder="Send a message" />
-        <button id="youly-306511-send-btn">
-          <img src="https://ekaradag14.github.io/youly-chatbot/send.png" width alt="Send" id="youly-306511-send-icon" />
-        </button>
-      </div>
-    `;
-      document.body.appendChild(chatContainer);
-
-      // Check if a user ID exists in localStorage
-      let userId = localStorage.getItem('youly-306511-user-id');
-      // Check the stored status in localStorage
-      let chatStatus = localStorage.getItem('youly-306511-chat-status');
-
-
-      function generateUserId() {
-          // Use crypto.randomUUID() if available
-          if (crypto && crypto.randomUUID) {
-              return crypto.randomUUID();
-          } else {
-              // Fallback to a custom UUID generator
-              return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                  const r = (Math.random() * 16) | 0,
-                      v = c === 'x' ? r : (r & 0x3) | 0x8;
-                  return v.toString(16);
-              });
-          }
-      }
-
-
-      if (!userId) {
-          userId = generateUserId();
-          localStorage.setItem('youly-306511-user-id', userId);
-      }
-
-      // Create the toggle button for the chat
-      const toggleBtn = document.createElement('button');
-      toggleBtn.id = 'youly-306511-toggle-btn';
-      toggleBtn.innerHTML = `
-          <span class="youly-306511-live-dot"></span>
-          <span class="youly-306511-toggle-text">Message us</span>
-      `;
-      document.body.appendChild(toggleBtn);
-
-      // Toggle the visibility of the chat
-      toggleBtn.addEventListener('click', () => {
-          if (chatContainer.classList.contains('hidden')) {
-              showChatContainer();
-          } else {
-              hideChatContainer();
-          }
-      });
-
-      // If status is 'open', show the chat container; else, hide it
-      if (chatStatus === 'open') {
-          showChatContainer();
-      } else {
-          hideChatContainer();
-      }
-
-      // Functions to show and hide the chat container
-      function showChatContainer() {
-          chatContainer.classList.remove('hidden');
-          toggleBtn.classList.add('hidden'); // Hide the toggle button
-          localStorage.setItem('youly-306511-chat-status', 'open'); // Store status as 'open'
-      }
-
-      function hideChatContainer() {
-          chatContainer.classList.add('hidden');
-          toggleBtn.classList.remove('hidden'); // Show the toggle button
-          localStorage.setItem('youly-306511-chat-status', 'closed'); // Store status as 'closed'
-      }
-
-
-      // Chatbot logic
-      const chatBox = document.getElementById('youly-306511-chat-box');
-      const userInput = document.getElementById('youly-306511-user-input');
-      const sendBtn = document.getElementById('youly-306511-send-btn');
-
-      // Load chat history from localStorage
-      let chatHistory = JSON.parse(localStorage.getItem('youly-306511-chat-history')) || [];
-      chatHistory.forEach((message) => {
-          addMessageToChat(message.sender, message.text, message.timestamp, false);
-      });
-
-      // Event listener for the send button
-      sendBtn.addEventListener('click', async () => {
-          const message = userInput.value;
-          if (message.trim() !== '') {
-              const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-              addMessageToChat('User', message, timestamp);
-              userInput.value = ''; // Clear input field
-
-              // Show typing indicator
-              const typingIndicator = createTypingIndicator();
-              chatBox.appendChild(typingIndicator);
-              chatBox.scrollTop = chatBox.scrollHeight;
-
-              try {
-                  const response = await getBotResponse(message);
-                  chatBox.removeChild(typingIndicator);
-                  const botTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                  addMessageToChat('Bot', response, botTimestamp);
-              } catch (error) {
-                  chatBox.removeChild(typingIndicator);
-                  const errorTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                  addMessageToChat('Bot', 'Sorry, something went wrong. Please try again.', errorTimestamp);
-              }
-          }
-      });
-
-      // Close button functionality
-      const closeBtn = document.getElementById('youly-306511-close-btn');
-      closeBtn.addEventListener('click', () => {
-          hideChatContainer();
-      });
-
-      // Allow sending message with Enter key
-      userInput.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-              sendBtn.click();
-          }
-      });
-
-      // Function to add messages to the chat
-      function addMessageToChat(sender, message, timestamp, saveToHistory = true) {
-          const messageElem = document.createElement('div');
-          messageElem.classList.add('youly-306511-message', `youly-306511-${sender.toLowerCase()}-message`);
-
-          messageElem.innerHTML = `
-        <div class="youly-306511-message-text">${message}</div>
-        <div class="youly-306511-timestamp">${timestamp}</div>
-      `;
-          chatBox.appendChild(messageElem);
-          chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
-
-          // Save message to chat history
-          if (saveToHistory) {
-              chatHistory.push({ sender, text: message, timestamp });
-              localStorage.setItem('youly-306511-chat-history', JSON.stringify(chatHistory));
-          }
-      }
-
-      // Function to create the typing indicator
-      function createTypingIndicator() {
-          const typingIndicator = document.createElement('div');
-          typingIndicator.classList.add('youly-306511-message', 'youly-306511-bot-message', 'youly-306511-typing-indicator');
-
-          typingIndicator.innerHTML = `
-        <div class="youly-306511-message-text">
-          <span class="youly-306511-typing-dot"></span>
-          <span class="youly-306511-typing-dot"></span>
-          <span class="youly-306511-typing-dot"></span>
-        </div>
-        <div class="youly-306511-timestamp">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-      `;
-          return typingIndicator;
-      }
-
-      // Function to get bot response
-      async function getBotResponse(message) {
-          // Simulate network delay for typing indicator
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-
-          try {
-              const response = await fetch(`https://dummyjson.com/quotes/${Math.floor(Math.random() * 20) + 1}?delay=500`, {
-                  method: 'GET',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  //  body: JSON.stringify({ message, userId }), // Include userId here
-              });
-              const data = await response.json();
-              return data.quote;
-
-          } catch (error) {
-              throw error;
-          }
-      }
-  });
+  // Function to show the chat bubble
+  function showChatBubble() {
+    const chatBubble = document.createElement('div');
+    chatBubble.className = 'chat-bubble';
+    chatBubble.innerHTML = 'We are live now!<span class="dot">•</span>';
+    document.body.appendChild(chatBubble);
+  }
 })();
