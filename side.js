@@ -1,5 +1,5 @@
 (function () {
-    const currentRolloutPercentage = 60; // Update this value as needed
+    const currentRolloutPercentage = 100; // Update this value as needed
   
     // Retrieve stored values from localStorage and sessionStorage
     const storedRolloutPercentage = parseInt(localStorage.getItem('rolloutPercentage'), 10);
